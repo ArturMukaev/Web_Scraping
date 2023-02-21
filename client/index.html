@@ -1,0 +1,36 @@
+<html>
+<head>
+    <script type="text/javascript" src="https://www.gstatic.com/charts/loader.js"></script>
+    <script type="text/javascript">
+        google.charts.load('current', {'packages':['corechart']});
+        google.charts.setOnLoadCallback(drawChart);
+        console.log("Data is loading, please wait.");
+        async function drawChart() {
+            let receivedData = [];
+            try {
+                const received = await fetch('http://localhost:5000/api/data');
+                receivedData = await received.json();
+            } catch (e) {
+                console.log("Cannot receive the data!");
+            }
+            console.dir(receivedData);
+            var data = google.visualization.arrayToDataTable(receivedData);
+
+            var options = {
+                title: 'Dependence of rating from tonality',
+                curveType: 'function',
+                width: 1000,
+                height: 600,
+                legend: { position: 'bottom' }
+            };
+
+            var chart = new google.visualization.LineChart(document.getElementById('curve_chart'));
+
+            chart.draw(data, options);
+        }
+    </script>
+</head>
+<body>
+<div id="curve_chart" style="width: 1500px; height: 600px"></div>
+</body>
+</html>
